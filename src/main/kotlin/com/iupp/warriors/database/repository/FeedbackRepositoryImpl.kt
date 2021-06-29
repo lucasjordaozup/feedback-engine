@@ -21,18 +21,18 @@ class FeedbackRepositoryImpl(private val cqlSession: CqlSession): FeedbackReposi
                         "SELECT * FROM feedbackkeyspace.feedbacks WHERE id = ? LIMIT 1",
                         id
                     )
-            )
+            ).map { feedback ->
+                FeedbackEntity(
+                    feedback.getString("descricao")!!,
+                    feedback.getString("titulo")!!,
+                    feedback.getUuid("id")!!,
+                    LocalDateTime.ofInstant(feedback.getInstant("createdAt"), ZoneOffset.UTC)
+                ) }.firstOrNull()
 
-            LOG.info("Consulta ao banco de dados concluida com sucesso {}", "findById")
-            val entityResult = result.map { feedback ->
-                    FeedbackEntity(
-                        feedback.getString("descricao")!!,
-                        feedback.getString("titulo")!!,
-                        feedback.getUuid("id")!!,
-                        LocalDateTime.ofInstant(feedback.getInstant("createdAt"), ZoneOffset.UTC)
-                    ) }.firstOrNull()
-            if(entityResult != null){
-                return Optional.of(entityResult)
+            LOG.info("Consulta ao banco de dados concluida com sucesso. {}", "findById")
+
+            if(result != null){
+                return Optional.of(result)
             }
             return Optional.empty()
         }catch (error: IllegalStateException){
