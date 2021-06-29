@@ -1,10 +1,13 @@
 micronaut:
+  server:
+    port: 8082
   application:
     name: feedbackEngine
 cassandra:
   default:
-    clusterName: '"myCluster"'
-    contactPoint: '"localhost"'
-    port: 9042
-    maxSchemaAgreementWaitSeconds: 20
-    ssl: true
+    basic:
+      contact-points:
+        - "127.0.0.1:9042"
+      session-keyspace: feedbackkeyspace
+      load-balancing-policy:
+        local-datacenter: datacenter1
