@@ -2,6 +2,7 @@ package com.iupp.warriors.database.repository
 
 import com.datastax.oss.driver.api.core.CqlSession
 import com.datastax.oss.driver.api.core.cql.SimpleStatement
+import com.iupp.warriors.core.ports.FeedbackRepositoryPort
 import com.iupp.warriors.database.entity.FeedbackEntity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -11,7 +12,7 @@ import java.util.*
 import javax.inject.Singleton
 
 @Singleton
-class FeedbackRepositoryImpl(private val cqlSession: CqlSession): FeedbackRepository {
+class FeedbackRepositoryImpl(private val cqlSession: CqlSession): FeedbackRepositoryPort {
     val LOG:Logger = LoggerFactory.getLogger(FeedbackRepositoryImpl::class.java)
     override fun findById(id: UUID): Optional<FeedbackEntity> {
         try {
@@ -54,9 +55,9 @@ class FeedbackRepositoryImpl(private val cqlSession: CqlSession): FeedbackReposi
             return result
                 .map { feedback ->
                     FeedbackEntity(
-                        feedback.getString("descricao")!!,
-                        feedback.getString("titulo")!!,
-                        feedback.getUuid("id")!!,
+                        feedback.getString("descricao"),
+                        feedback.getString("titulo"),
+                        feedback.getUuid("id"),
                         LocalDateTime.ofInstant(feedback.getInstant("createdAt"), ZoneOffset.UTC)
                     ) }.toList()
         }catch (error: IllegalStateException){

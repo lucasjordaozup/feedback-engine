@@ -1,8 +1,8 @@
-package com.iupp.warriors.entrypoint.controllers
+package com.iupp.warriors.entrypoint.controller
 
-import com.iupp.warriors.database.entity.FeedbackEntity
-import com.iupp.warriors.database.repository.FeedbackRepository
-import com.iupp.warriors.entrypoint.mappers.ConverterFeedback
+import com.iupp.warriors.core.mapper.ConverterFeedback
+import com.iupp.warriors.core.model.Feedback
+import com.iupp.warriors.core.ports.FeedbackServicePort
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
@@ -15,7 +15,6 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.extension.ExtendWith
-import java.lang.IllegalArgumentException
 import java.time.LocalDateTime
 import java.util.*
 
@@ -24,17 +23,17 @@ import java.util.*
 internal class FeedbackControllerTest: AnnotationSpec(){
 
     @MockK
-    lateinit var repository: FeedbackRepository
+    lateinit var service: FeedbackServicePort
 
     @InjectMockKs
     lateinit var controller: FeedbackController
 
-    lateinit var feedback: FeedbackEntity
+    lateinit var feedback: Feedback
 
     @BeforeEach
     fun setUp(){
         MockKAnnotations.init(this)
-        feedback = FeedbackEntity(
+        feedback = Feedback(
             "descricao teste",
             "titulo teste",
             UUID.randomUUID(),
@@ -45,33 +44,19 @@ internal class FeedbackControllerTest: AnnotationSpec(){
     @Test
     fun `Deve retornar um feedbackdto por id`(){
 
-        every { repository.findById(feedback.id!!) } answers {
+        every { service.findById(feedback.id!!) } answers {
             Optional.of(feedback)
         }
 
         val response = controller.consultar(feedback.id!!)
 
         response.status shouldBe HttpStatus.OK
-        response.body() shouldBe ConverterFeedback.feedbackEntityToFeedbackDto(feedback)
-    }
-
-    @Test
-    fun `Deve retornar uma excecao quando o id informado nao for de um feedback existente`(){
-
-        every { repository.findById(feedback.id!!) } answers {
-            Optional.empty()
-        }
-
-        val response = shouldThrow<IllegalArgumentException> {
-            controller.consultar(feedback.id!!)
-        }
-
-        response.message shouldBe "Nenhum resultado encontrado com o id informado"
+        response.body() shouldBe ConverterFeedback.feedbackToFeedbackDto(feedback)
     }
 
     @Test
     fun `Deve retornar uma lista de feedbackdto`(){
-        every { repository.findAll() } answers {
+        every { service.findAll() } answers {
             listOf(feedback, feedback)
         }
 

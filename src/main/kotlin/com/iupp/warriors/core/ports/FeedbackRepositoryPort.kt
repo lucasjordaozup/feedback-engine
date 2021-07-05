@@ -1,9 +1,9 @@
-package com.iupp.warriors.database.repository
+package com.iupp.warriors.core.ports
 
 import com.iupp.warriors.database.entity.FeedbackEntity
 import java.util.*
 
-interface FeedbackRepository {
+interface FeedbackRepositoryPort {
     fun findById(id: UUID): Optional<FeedbackEntity>
     fun findAll(): List<FeedbackEntity?>
 }
