@@ -3,6 +3,14 @@ micronaut:
     port: 8082
   application:
     name: feedbackEngine
+
+endpoints:
+  health:
+    enabled: true
+    sensitive: false
+    url:
+      enabled: true
+
 cassandra:
   default:
     basic:
