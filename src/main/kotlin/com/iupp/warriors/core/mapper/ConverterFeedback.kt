@@ -2,8 +2,7 @@ package com.iupp.warriors.core.mapper
 
 import com.iupp.warriors.core.model.Feedback
 import com.iupp.warriors.database.entity.FeedbackEntity
-import com.iupp.warriors.entrypoint.dtos.FeedbackDto
-import java.util.*
+import com.iupp.warriors.entrypoint.dto.FeedbackDto
 
 class ConverterFeedback {
     companion object{

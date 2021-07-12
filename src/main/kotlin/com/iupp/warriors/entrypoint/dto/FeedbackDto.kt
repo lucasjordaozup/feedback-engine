@@ -1,4 +1,4 @@
-package com.iupp.warriors.entrypoint.dtos
+package com.iupp.warriors.entrypoint.dto
 
 import java.util.*
 
